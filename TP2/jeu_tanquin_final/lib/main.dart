@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'exo1.dart' as exo1;
 import 'exo2a.dart' as exo2a;
+import 'exo2b.dart' as exo2b;
 import 'exo4.dart' as exo4;
 import 'exo5a.dart' as exo5a;
 import 'exo5b.dart' as exo5b;
@@ -32,6 +33,10 @@ List exos = [
       title: 'Exercice 2',
       subtitle: 'Animated Rotate & Scale Image',
       buildFunc: (context) => exo2a.DisplayImageWidget()),
+  Exo(
+      title: 'Exercice 2b',
+      subtitle: 'Animated Rotate & Scale Image',
+      buildFunc: (context) => exo2b.DisplayImageWidget()),
   Exo(
       title: 'Exercice 4',
       subtitle: 'Afficher une tuile',
