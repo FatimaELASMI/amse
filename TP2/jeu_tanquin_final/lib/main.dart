@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'exo1.dart' as exo1;
-import 'exo2.dart' as exo2;
+import 'exo2a.dart' as exo2a;
 import 'exo4.dart' as exo4;
 import 'exo5a.dart' as exo5a;
 import 'exo5b.dart' as exo5b;
@@ -30,9 +30,9 @@ List exos = [
       buildFunc: (context) => exo1.ImageWidget()),
   Exo(
       title: 'Exercice 2',
-      subtitle: 'Transformer une image',
-      buildFunc: (context) => exo2.DisplayImageWidget()),
-   Exo(
+      subtitle: 'Animated Rotate & Scale Image',
+      buildFunc: (context) => exo2a.DisplayImageWidget()),
+  Exo(
       title: 'Exercice 4',
       subtitle: 'Afficher une tuile',
       buildFunc: (context) => exo4.DisplayTileWidget()),
@@ -40,7 +40,6 @@ List exos = [
       title: 'Exercice 5',
       subtitle: 'Grid of colored boxes',
       buildFunc: (context) => exo5a.DisplayGridView()),
-      
   Exo(
       title: 'Exercice 5b',
       subtitle: 'Fixed Grid of CroppedImage',
@@ -49,8 +48,6 @@ List exos = [
       title: 'Exercice 5c',
       subtitle: 'Configurable Taquin Board ',
       buildFunc: (context) => exo5c.DisplayGridView()),
-      
-      
 ];
 
 class MenuPage extends StatelessWidget {
