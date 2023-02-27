@@ -46,23 +46,39 @@ class MediaApp extends State<MyApp> {
  int _selectedIndex = 0;
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
-  ];
+  // static const List<Widget> _widgetOptions = <Widget>[
+  //   Text(
+  //     'Index 0: Home',
+  //     style: optionStyle,
+  //   ),
+  //   Text(
+  //     'Index 1: Business',
+  //     style: optionStyle,
+  //   ),
+  //   Text(
+  //     'Index 2: School',
+  //     style: optionStyle,
+  //   ),
+  // ];
    void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+         switch(index){
+              case 0: 
+                // Navigator.push(context,MaterialPageRoute(builder: (context) => HomePage()), );
+              break;
+               case 1: 
+                // Navigator.push(context,MaterialPageRoute(builder: (context) => favorite.FavoriteListScreen(favorites: _favorites)), );
+              break;
+              case 2:
+                Navigator.push(context,MaterialPageRoute(builder: (context) => media.MyApp()), );
+              break;
+              case 3:
+             
+                Navigator.push(context,MaterialPageRoute(builder:(context)=>profile.ProfilePage()));
+               
+              break;
+            }
     });
   }
 
@@ -74,19 +90,26 @@ class MediaApp extends State<MyApp> {
       home: Scaffold(
          bottomNavigationBar: 
          BottomNavigationBar(
+           backgroundColor: Colors.black,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home,color: Colors.amber),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Business',
+            icon: Icon(Icons.favorite_border,color: Colors.amber),
+            label: 'Favorite',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'School',
+            icon: Icon(LineIcons.video,color: Colors.amber),
+            label: 'Media',
           ),
+            BottomNavigationBarItem(
+            icon: Icon(LineIcons.user,color: Colors.amber),
+            
+            label: 'Profile',
+          ),
+       
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],

@@ -63,6 +63,22 @@ class MediaApp extends State<MyApp> {
    void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+         switch(index){
+              case 0: 
+                Navigator.push(context,MaterialPageRoute(builder: (context) => HomePage()), );
+              break;
+               case 1: 
+                // Navigator.push(context,MaterialPageRoute(builder: (context) => favorite.FavoriteListScreen(favorites: _favorites)), );
+              break;
+              case 2:
+                Navigator.push(context,MaterialPageRoute(builder: (context) => media.MyApp()), );
+              break;
+              case 3:
+             
+                Navigator.push(context,MaterialPageRoute(builder:(context)=>profile.ProfilePage()));
+               
+              break;
+            }
     });
   }
 
@@ -72,21 +88,28 @@ class MediaApp extends State<MyApp> {
     return MaterialApp(
       title: 'media ',
       home: Scaffold(
-         bottomNavigationBar: 
+         bottomNavigationBar:  
          BottomNavigationBar(
+           backgroundColor: Colors.black,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home,color: Colors.amber),
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Business',
+            icon: Icon(Icons.favorite_border,color: Colors.amber),
+            label: 'Favorite',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'School',
+            icon: Icon(LineIcons.video,color: Colors.amber),
+            label: 'Media',
           ),
+            BottomNavigationBarItem(
+            icon: Icon(LineIcons.user,color: Colors.amber),
+            
+            label: 'Profile',
+          ),
+       
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],
