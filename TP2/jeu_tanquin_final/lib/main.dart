@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'exo1.dart' as exo1;
 import 'exo2.dart' as exo2;
 import 'exo4.dart' as exo4;
-import 'exo5.dart' as exo5;
+import 'exo5a.dart' as exo5a;
+import 'exo5b.dart' as exo5b;
+import 'exo5c.dart' as exo5c;
 
 void main() => runApp(MyApp());
 
@@ -36,8 +38,17 @@ List exos = [
       buildFunc: (context) => exo4.DisplayTileWidget()),
   Exo(
       title: 'Exercice 5',
-      subtitle: 'Géneration du plateau de tuiles',
-      buildFunc: (context) => exo5.DisplayGridView()),
+      subtitle: 'Grid of colored boxes',
+      buildFunc: (context) => exo5a.DisplayGridView()),
+      
+  Exo(
+      title: 'Exercice 5b',
+      subtitle: 'Fixed Grid of CroppedImage',
+      buildFunc: (context) => exo5b.DisplayGridView()),
+  Exo(
+      title: 'Exercice 5c',
+      subtitle: 'Configurable Taquin Board ',
+      buildFunc: (context) => exo5c.DisplayGridView()),
       
       
 ];
