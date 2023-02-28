@@ -6,6 +6,7 @@ import 'exo4.dart' as exo4;
 import 'exo5a.dart' as exo5a;
 import 'exo5b.dart' as exo5b;
 import 'exo5c.dart' as exo5c;
+import 'exo6a.dart' as exo6a;
 
 void main() => runApp(MyApp());
 
@@ -27,7 +28,7 @@ class Exo {
 List exos = [
   Exo(
       title: 'Exercice 1',
-      subtitle: 'Afficher une image',
+      subtitle: 'Display a image',
       buildFunc: (context) => exo1.ImageWidget()),
   Exo(
       title: 'Exercice 2',
@@ -39,7 +40,7 @@ List exos = [
       buildFunc: (context) => exo2b.DisplayImageWidget()),
   Exo(
       title: 'Exercice 4',
-      subtitle: 'Afficher une tuile',
+      subtitle: 'Display a Tile',
       buildFunc: (context) => exo4.DisplayTileWidget()),
   Exo(
       title: 'Exercice 5',
@@ -53,6 +54,10 @@ List exos = [
       title: 'Exercice 5c',
       subtitle: 'Configurable Taquin Board ',
       buildFunc: (context) => exo5c.DisplayGridView()),
+  Exo(
+      title: 'Exercice 6a',
+      subtitle: 'Moving Tiles ',
+      buildFunc: (context) => exo6a.PositionedTiles()),
 ];
 
 class MenuPage extends StatelessWidget {
