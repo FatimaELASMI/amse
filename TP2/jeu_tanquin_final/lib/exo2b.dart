@@ -15,14 +15,42 @@ class _DisplayImageWidgetState extends State<DisplayImageWidget> {
   double _currentScaleValue = 1;
   bool isChecked = false;
   bool isAnimating = false;
+  Timer? _timer;
+
+  void startAnimation() {
+    _timer = Timer.periodic(Duration(milliseconds: 300), (timer) {
+      setState(() {
+        if (_currentRotateXValue == 2 * pi) {
+          _currentRotateXValue = 0;
+        } else {
+          _currentRotateXValue += pi / 4;
+        }
+
+        if (_currentRotateZValue == 2 * pi) {
+          _currentRotateZValue = 0;
+        } else {
+          _currentRotateZValue += pi / 4;
+        }
+
+        if (_currentScaleValue == 2) {
+          _currentScaleValue = 0;
+        } else {
+          _currentScaleValue += 0.25;
+        }
+      });
+    });
+  }
+
+  void stopAnimation() {
+    _timer?.cancel();
+    _timer = null;
+  }
 
   @override
   void dispose() {
-    super.dispose();
     _timer?.cancel();
+    super.dispose();
   }
-
-  Timer? _timer;
 
   @override
   Widget build(BuildContext context) {
@@ -108,29 +136,26 @@ class _DisplayImageWidgetState extends State<DisplayImageWidget> {
               ),
             ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                isAnimating = !isAnimating;
-              });
-              if (isAnimating) {
-                const d = Duration(milliseconds: 50);
-                Timer.periodic(d, animate);
-              }
-            },
-            child: Text(isAnimating ? 'Stop Animation' : 'Start Animation'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    isAnimating = !isAnimating;
+                    if (isAnimating) {
+                      startAnimation();
+                    } else {
+                      stopAnimation();
+                    }
+                  });
+                },
+                child: Text(isAnimating ? 'Stop' : 'Start'),
+              ),
+            ],
           ),
         ],
       ),
     );
-  }
-
-  void animate(Timer t) {
-    setState(() {
-      _currentRotateZValue += 0.1;
-      _currentRotateXValue += 0.1;
-      _currentScaleValue =
-          _currentScaleValue < 2 ? _currentScaleValue + 0.01 : 1;
-    });
   }
 }
