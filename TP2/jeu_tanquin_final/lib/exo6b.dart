@@ -57,9 +57,7 @@ class DisplayGridViewState extends State<DisplayGridView> {
                         ),
                         child: Center(
                           child: Text(
-                            _items[i].isEmpty
-                                ? 'empty ${i}'
-                                : 'Tile ${_items[i]}',
+                            _items[i].isEmpty ? 'empty 0' : 'Tile ${_items[i]}',
                             style: const TextStyle(
                                 fontSize: 20, color: Colors.black),
                           ),
