@@ -73,6 +73,14 @@ List exos = [
       title: 'Exercice 7',
       subtitle: 'Tanquin Game',
       buildFunc: (context) => exo7.DisplayImage()),
+  Exo(
+      title: 'Exercice 7b',
+      subtitle: 'Tanquin Game',
+      buildFunc: (context) => exo7.MyGridView()),
+  Exo(
+      title: 'Exercice 7c',
+      subtitle: 'Tanquin Game',
+      buildFunc: (context) => exo7.MyGridView()),
 ];
 
 class MenuPage extends StatelessWidget {
