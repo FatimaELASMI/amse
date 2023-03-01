@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 
 class DisplayGridView extends StatelessWidget {
-  List<Widget> createTapableCroppedImageTiles() {
+  List<Widget> _generateTiles() {
     return [
       [-1, -1],
       [0, -1],
@@ -15,11 +15,11 @@ class DisplayGridView extends StatelessWidget {
       [1, 1],
     ]
         .map((coords) =>
-            createCroppedImageTile(coords[0].toDouble(), coords[1].toDouble()))
+            croppedImageTile(coords[0].toDouble(), coords[1].toDouble()))
         .toList();
   }
 
-  Widget createCroppedImageTile(double x, double y) {
+  Widget croppedImageTile(double x, double y) {
     return InkWell(
       child: FittedBox(
           fit: BoxFit.fill,
@@ -49,7 +49,7 @@ class DisplayGridView extends StatelessWidget {
         crossAxisSpacing: 2,
         mainAxisSpacing: 2,
         crossAxisCount: 3,
-        children: this.createTapableCroppedImageTiles(),
+        children: this._generateTiles(),
       ),
     );
   }
