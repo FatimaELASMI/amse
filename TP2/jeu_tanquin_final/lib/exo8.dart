@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'exo6c.dart' as exo6c;
-import 'main.dart' as Home;
 
 Random random = new Random();
 
@@ -72,6 +71,18 @@ class DisplayGridViewState extends State<DisplayGridView> {
     return _tiles;
   }
 
+  // void _pickImage() async {
+  //   var imagePath = await Navigator.of(context).push(
+  //     MaterialPageRoute(
+  //       builder: (context) => ImagePicker(),
+  //     ),
+  //   );
+  //   setState(() {
+  //     imagePath = imagePath;
+  //     _generateTiles();
+  //   });
+  // }
+
   void _pickImage() async {
     final _imagePath = await Navigator.of(context).push(
       MaterialPageRoute(
@@ -92,29 +103,18 @@ class DisplayGridViewState extends State<DisplayGridView> {
           title: Text('Taquin Board '),
         ),
         body: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          Row(
-            children: [
-              Text(
-                "Choose an image :  ",
-                style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold),
-              ),
-              GestureDetector(
-                onTap: () {
-                  _pickImage();
-                  setState(() {
-                    _generateTiles();
-                  });
-                },
-                child: Image.asset(
-                  imagePath,
-                  width: 80,
-                  height: 80,
-                ),
-              ),
-            ],
+          GestureDetector(
+            onTap: () {
+              _pickImage();
+              setState(() {
+                _generateTiles();
+              });
+            },
+            child: Image.asset(
+              imagePath,
+              width: 50,
+              height: 50,
+            ),
           ),
           SizedBox(height: 20),
           Expanded(
@@ -212,6 +212,29 @@ class DisplayGridViewState extends State<DisplayGridView> {
                   borderRadius: BorderRadius.circular(10.0),
                 )),
           ]),
+          // Padding(
+          //   padding: EdgeInsets.only(top: 40),
+          //   child: Row(
+          //     children: [
+          //       RawMaterialButton(
+          //         onPressed: () {
+          //           Navigator.pop(context);
+          //         },
+          //         elevation: 2.0,
+          //         fillColor: Colors.blue,
+          //         child: Container(
+          //             padding: EdgeInsets.only(left: 6),
+          //             child: Icon(
+          //               Icons.arrow_back_ios,
+          //               size: 25.0,
+          //               color: Colors.white,
+          //             )),
+          //         padding: EdgeInsets.all(15.0),
+          //         shape: CircleBorder(),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           Padding(
               padding: const EdgeInsets.only(top: 100.0),
               child: Row(
@@ -244,11 +267,7 @@ class DisplayGridViewState extends State<DisplayGridView> {
                   ),
                   RawMaterialButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Home.MyApp(),
-                          ));
+                      Navigator.pop(context);
                     },
                     elevation: 2.0,
                     fillColor: Colors.blue,

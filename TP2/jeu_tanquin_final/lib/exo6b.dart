@@ -1,34 +1,50 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
+import 'exo6a.dart' as exo6a;
+import 'exo6c.dart' as exo6c;
+
+class Tile {
+  int number;
+
+  Tile(this.number);
+}
+
+class TileWidget extends StatelessWidget {
+  final Tile tile;
+
+  TileWidget(this.tile);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        'Tile${tile.number}',
+        style: const TextStyle(fontSize: 20, color: Colors.black),
+      ),
+    );
+  }
+}
 
 class DisplayGridView extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => DisplayGridViewState();
+  DisplayGridViewState createState() => DisplayGridViewState();
 }
 
 class DisplayGridViewState extends State<DisplayGridView> {
-  final List<String> _items =
-      List.generate(16, (index) => index == 0 ? '' : index.toString());
-  _changeIndex(int i) {
-    int _emptyIndex = _items.lastIndexOf('');
-    int _previousItem = i - 1;
-    int _nextItem = i + 1;
-    int _previousRow = i - 4;
-    int _nextRow = i + 4;
-    if (_emptyIndex == _previousItem) {
-      _items[_previousItem] = _items[i];
-      _items[i] = '';
-    } else if (_emptyIndex == _nextItem) {
-      _items[_nextItem] = _items[i];
-      _items[i] = '';
-    } else if (_emptyIndex == _previousRow) {
-      _items[_previousRow] = _items[i];
-      _items[i] = '';
-    } else if (_emptyIndex == _nextRow) {
-      _items[_nextRow] = _items[i];
-      _items[i] = '';
-    }
-    setState(() {});
+  static int EmptyIndex = 0;
+  List<Widget>? _items;
+
+  @override
+  void initState() {
+    super.initState();
+    _items = List.generate(16, (index) => TileWidget(Tile(index)));
+  }
+
+  bool _ChangeIndex(int index) {
+    return ((EmptyIndex != index) &&
+        (((EmptyIndex % 4 != 0) && (index + 1 == EmptyIndex)) ||
+            (((EmptyIndex + 1) % 4 != 0) && (index - 1 == EmptyIndex)) ||
+            (((EmptyIndex + 4 >= 0) && (index + 4 == EmptyIndex))) ||
+            (((EmptyIndex + 4 < 16) && (index - 4 == EmptyIndex)))));
   }
 
   @override
@@ -37,33 +53,107 @@ class DisplayGridViewState extends State<DisplayGridView> {
         appBar: AppBar(
           title: const Text('Swapable Color grid widget'),
         ),
-        body: Center(
-            child: AspectRatio(
-          aspectRatio: 1,
-          child: GridView.count(
-            crossAxisCount: 4,
-            children: [
-              for (int i = 0; i < 16; i++)
-                InkWell(
-                    onTap: () {
-                      _changeIndex(i);
-                    },
-                    child: Container(
-                        margin: const EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          color: _items[i].isEmpty
-                              ? Colors.white
-                              : Color.fromARGB(255, 153, 161, 168),
-                        ),
-                        child: Center(
-                          child: Text(
-                            _items[i].isEmpty ? 'empty 0' : 'Tile ${_items[i]}',
-                            style: const TextStyle(
-                                fontSize: 20, color: Colors.black),
+        body: Material(
+            type: MaterialType.transparency,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                      height: 480,
+                      child: GridView.count(
+                        primary: false,
+                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        crossAxisSpacing: 3,
+                        mainAxisSpacing: 2,
+                        crossAxisCount: 4,
+                        children: List.generate(
+                            16,
+                            (index) => InkWell(
+                                child: Container(
+                                  child: _items![index],
+                                  decoration: BoxDecoration(
+                                      color: EmptyIndex == null
+                                          ? Color.fromARGB(255, 153, 161, 168)
+                                          : index == EmptyIndex
+                                              ? Colors.white
+                                              : Color.fromARGB(
+                                                  255, 153, 161, 168),
+                                      border: Border.all(
+                                          color: EmptyIndex == null
+                                              ? Colors.transparent
+                                              : _ChangeIndex(index)
+                                                  ? Colors.red
+                                                  : Colors.transparent,
+                                          width: 5)),
+                                ),
+                                onTap: () {
+                                  swapTiles(index);
+                                })),
+                      )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(right: 100.0),
+                        child: RawMaterialButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => exo6a.PositionedTiles(),
+                                ));
+                          },
+                          elevation: 2.0,
+                          fillColor: Colors.blue,
+                          child: Container(
+                              padding: EdgeInsets.only(left: 20),
+                              child: Icon(
+                                Icons.arrow_back_ios,
+                                size: 20.0,
+                                color: Colors.white,
+                              )),
+                          padding: EdgeInsets.all(10.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
                           ),
-                        ))),
-            ],
-          ),
-        )));
+                        ),
+                      ),
+                      RawMaterialButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => exo6c.DisplayGridView(),
+                              ));
+                        },
+                        elevation: 2.0,
+                        fillColor: Colors.blue,
+                        child: Icon(
+                          Icons.arrow_forward_ios,
+                          size: 20.0,
+                          color: Colors.white,
+                        ),
+                        padding: EdgeInsets.all(10.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                    ],
+                  ),
+                ])));
+  }
+
+  void swapTiles(int index) {
+    var tempValue;
+    setState(() {
+      if (_ChangeIndex(index)) {
+        tempValue = _items![EmptyIndex];
+
+        _items![EmptyIndex] = _items![index];
+
+        _items![index] = tempValue;
+        EmptyIndex = index;
+      }
+    });
   }
 }

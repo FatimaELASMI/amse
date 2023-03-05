@@ -1,117 +1,195 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'exo6b.dart' as exo6b;
+import 'exo7.dart' as exo7;
+
+Random random = new Random();
+
+class Tile {
+  int number;
+
+  Tile(this.number);
+}
+
+class TileWidget extends StatelessWidget {
+  final Tile tile;
+
+  TileWidget(this.tile);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        'Tile${tile.number}',
+        style: const TextStyle(fontSize: 15, color: Colors.black),
+      ),
+    );
+  }
+}
 
 class DisplayGridView extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => DisplayGridViewState();
+  DisplayGridViewState createState() => DisplayGridViewState();
 }
 
 class DisplayGridViewState extends State<DisplayGridView> {
-  int _gridSize = 3;
-  List<String> _items = [];
+  int gridSize = 4;
+  static int EmptyIndex = 1;
+  List<Widget>? _items;
+
+  int counter = 0;
 
   @override
   void initState() {
     super.initState();
-    _generateItems();
+    gridSize = 4;
+    _items = List.generate(100, (index) => TileWidget(Tile(index)));
+
+    counter = 0;
   }
 
-  void _generateItems() {
-    _items.clear();
-    int totalItems = _gridSize * _gridSize;
-    for (int i = 0; i < totalItems; i++) {
-      _items.add(i == 0 ? '' : i.toString());
-    }
-  }
-
-  void _changeIndex(int i) {
-    int _emptyIndex = _items.lastIndexOf('');
-    int _previousItem = i - 1;
-    int _nextItem = i + 1;
-    int _previousRow = i - _gridSize;
-    int _nextRow = i + _gridSize;
-    if (_emptyIndex == _previousItem) {
-      _items[_previousItem] = _items[i];
-      _items[i] = '';
-    } else if (_emptyIndex == _nextItem) {
-      _items[_nextItem] = _items[i];
-      _items[i] = '';
-    } else if (_emptyIndex == _previousRow) {
-      _items[_previousRow] = _items[i];
-      _items[i] = '';
-    } else if (_emptyIndex == _nextRow) {
-      _items[_nextRow] = _items[i];
-      _items[i] = '';
-    }
-    setState(() {});
+  bool _ChangeIndex(int index) {
+    return ((EmptyIndex != index) &&
+        (((EmptyIndex % gridSize != 0) && (index + 1 == EmptyIndex)) ||
+            (((EmptyIndex + 1) % gridSize != 0) && (index - 1 == EmptyIndex)) ||
+            (((EmptyIndex + gridSize >= 0) &&
+                (index + gridSize == EmptyIndex))) ||
+            (((EmptyIndex + gridSize < pow(gridSize, 2)) &&
+                (index - gridSize == EmptyIndex)))));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Swapable Color grid widget'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AspectRatio(
-              aspectRatio: 1,
-              child: GridView.count(
-                crossAxisCount: _gridSize,
+        appBar: AppBar(
+          title: const Text('Swapable Color grid widget'),
+        ),
+        body: Material(
+            type: MaterialType.transparency,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  for (int i = 0; i < _items.length; i++)
-                    InkWell(
-                      onTap: () {
-                        _changeIndex(i);
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          color: _items[i].isEmpty
-                              ? Colors.white
-                              : Color.fromARGB(255, 153, 161, 168),
-                        ),
-                        child: Center(
-                          child: Text(
-                            _items[i].isEmpty ? 'empty 0' : 'Tile ${_items[i]}',
-                            style: const TextStyle(
-                              fontSize: 14,
+                  SizedBox(
+                      height: 480, // constrain height
+                      child: GridView.count(
+                        primary: false,
+                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                        crossAxisSpacing: 3,
+                        mainAxisSpacing: 2,
+                        crossAxisCount: gridSize,
+                        children: List.generate(
+                            pow(gridSize, 2).toInt(),
+                            (index) => InkWell(
+                                child: Container(
+                                  child: _items![index],
+                                  decoration: BoxDecoration(
+                                      color: EmptyIndex == null
+                                          ? Color.fromARGB(255, 153, 161, 168)
+                                          : index == EmptyIndex
+                                              ? Colors.white
+                                              : Color.fromARGB(
+                                                  255, 153, 161, 168),
+                                      border: Border.all(
+                                          color: EmptyIndex == null
+                                              ? Colors.transparent
+                                              : _ChangeIndex(index)
+                                                  ? Colors.red
+                                                  : Colors.transparent,
+                                          width: 5)),
+                                ),
+                                onTap: () {
+                                  swapTiles(index);
+                                })),
+                      )),
+                  Center(
+                      child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Size',
+                          style: TextStyle(
+                              fontSize: 15,
                               color: Colors.black,
-                            ),
+                              fontWeight: FontWeight.bold)),
+                      const SizedBox(width: 20),
+                      Expanded(
+                          child: Slider(
+                        value: gridSize.toDouble(),
+                        min: 3,
+                        max: 8,
+                        onChanged: (newValue) {
+                          setState(() {
+                            gridSize = newValue.round();
+                          });
+                        },
+                        divisions: 7,
+                        label: gridSize.toString(),
+                      ))
+                    ],
+                  )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(right: 100.0),
+                        child: RawMaterialButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => exo6b.DisplayGridView(),
+                                ));
+                          },
+                          elevation: 2.0,
+                          fillColor: Colors.blue,
+                          child: Container(
+                              padding: EdgeInsets.only(left: 20),
+                              child: Icon(
+                                Icons.arrow_back_ios,
+                                size: 20.0,
+                                color: Colors.white,
+                              )),
+                          padding: EdgeInsets.all(10.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
                           ),
                         ),
                       ),
-                    ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Size'),
-                const SizedBox(width: 20),
-                Expanded(
-                  child: Slider(
-                    min: 3,
-                    max: 8,
-                    divisions: 6,
-                    value: _gridSize.toDouble(),
-                    onChanged: (double value) {
-                      setState(() {
-                        _gridSize = value.toInt();
-                        _generateItems();
-                      });
-                    },
+                      RawMaterialButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => exo7.DisplayGridView(),
+                              ));
+                        },
+                        elevation: 2.0,
+                        fillColor: Colors.blue,
+                        child: Icon(
+                          Icons.arrow_forward_ios,
+                          size: 20.0,
+                          color: Colors.white,
+                        ),
+                        padding: EdgeInsets.all(10.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                Text('$_gridSize x $_gridSize'),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+                ])));
+  }
+
+  void swapTiles(int index) {
+    var tempValue;
+    setState(() {
+      if (_ChangeIndex(index)) {
+        tempValue = _items![EmptyIndex];
+
+        _items![EmptyIndex] = _items![index];
+
+        _items![index] = tempValue;
+        EmptyIndex = index;
+      }
+    });
   }
 }

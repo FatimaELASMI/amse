@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
+import 'exo2a.dart' as exo2a;
+import 'exo4.dart' as exo4;
 
 class DisplayImageWidget extends StatefulWidget {
   const DisplayImageWidget({Key? key}) : super(key: key);
@@ -15,41 +17,60 @@ class _DisplayImageWidgetState extends State<DisplayImageWidget> {
   double _currentScaleValue = 1;
   bool isChecked = false;
   bool isAnimating = false;
-  Timer? _timer;
-
-  void startAnimation() {
-    _timer = Timer.periodic(Duration(milliseconds: 300), (timer) {
-      setState(() {
-        if (_currentRotateXValue == 2 * pi) {
-          _currentRotateXValue = 0;
-        } else {
-          _currentRotateXValue += pi / 4;
-        }
-
-        if (_currentRotateZValue == 2 * pi) {
-          _currentRotateZValue = 0;
-        } else {
-          _currentRotateZValue += pi / 4;
-        }
-
-        if (_currentScaleValue == 2) {
-          _currentScaleValue = 0;
-        } else {
-          _currentScaleValue += 0.25;
-        }
-      });
-    });
-  }
-
-  void stopAnimation() {
-    _timer?.cancel();
-    _timer = null;
-  }
 
   @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _currentRotateXValue = 0;
+    _currentRotateZValue = 0;
+    _currentScaleValue = 100;
+    isChecked = false;
+    isAnimating = false;
+  }
+
+  void animateRotationX(Timer t) {
+    if (isAnimating == true) {
+      setState(() {
+        if (_currentRotateXValue < 180) {
+          _currentRotateXValue++;
+        } else {
+          _currentRotateXValue = 0;
+          animateRotationX(t);
+        }
+      });
+    } else {
+      t.cancel();
+    }
+  }
+
+  void animateRotationZ(Timer t) {
+    if (isAnimating == true) {
+      setState(() {
+        if (_currentRotateZValue < 180) {
+          _currentRotateZValue++;
+        } else {
+          _currentRotateZValue = 0;
+          animateRotationZ(t);
+        }
+      });
+    } else {
+      t.cancel();
+    }
+  }
+
+  void animateScaleValue(Timer t) {
+    if (isAnimating == true) {
+      setState(() {
+        if (_currentScaleValue > 0) {
+          _currentScaleValue--;
+        } else {
+          _currentScaleValue = 100;
+          animateScaleValue(t);
+        }
+      });
+    } else {
+      t.cancel();
+    }
   }
 
   @override
@@ -66,11 +87,28 @@ class _DisplayImageWidgetState extends State<DisplayImageWidget> {
             decoration: const BoxDecoration(color: Colors.white),
             child: Transform(
               alignment: Alignment.center,
-              transform: Matrix4.identity()
-                ..rotateX(_currentRotateXValue)
-                ..rotateZ(_currentRotateZValue)
-                ..rotateY(isChecked ? -pi : 0)
-                ..scale(_currentScaleValue),
+              transform: Matrix4(
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                0,
+                0,
+                0,
+                1,
+              )
+                ..rotateX(pi / 180 * _currentRotateXValue)
+                ..rotateY(isChecked ? pi : 0)
+                ..rotateZ(pi / 180 * _currentRotateZValue)
+                ..scale(_currentScaleValue / 100),
               child: Image.asset(
                 'assets/images/paris.jpg',
               ),
@@ -82,7 +120,7 @@ class _DisplayImageWidgetState extends State<DisplayImageWidget> {
               const Text('RotateX:'),
               Slider(
                 value: _currentRotateXValue,
-                max: 2 * pi,
+                max: 180,
                 onChanged: (double value) {
                   setState(() {
                     _currentRotateXValue = value;
@@ -97,7 +135,7 @@ class _DisplayImageWidgetState extends State<DisplayImageWidget> {
               const Text('RotateZ:'),
               Slider(
                 value: _currentRotateZValue,
-                max: 2 * pi,
+                max: 180,
                 onChanged: (double value) {
                   setState(() {
                     _currentRotateZValue = value;
@@ -113,9 +151,9 @@ class _DisplayImageWidgetState extends State<DisplayImageWidget> {
               Checkbox(
                 checkColor: Colors.white,
                 value: isChecked,
-                onChanged: (bool? value) {
+                onChanged: (value) {
                   setState(() {
-                    isChecked = value!;
+                    isChecked = !isChecked;
                   });
                 },
               )
@@ -127,7 +165,8 @@ class _DisplayImageWidgetState extends State<DisplayImageWidget> {
               const Text('Scale:'),
               Slider(
                 value: _currentScaleValue,
-                max: 2,
+                min: 0,
+                max: 100,
                 onChanged: (double value) {
                   setState(() {
                     _currentScaleValue = value;
@@ -139,21 +178,86 @@ class _DisplayImageWidgetState extends State<DisplayImageWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    isAnimating = !isAnimating;
-                    if (isAnimating) {
-                      startAnimation();
-                    } else {
-                      stopAnimation();
-                    }
-                  });
-                },
-                child: Text(isAnimating ? 'Stop' : 'Start'),
-              ),
+              RawMaterialButton(
+                  onPressed: () {
+                    setState(() {
+                      isAnimating = !isAnimating;
+                      Duration d1 = Duration(milliseconds: 20);
+                      Duration d2 = Duration(milliseconds: 30);
+                      Duration d3 = Duration(milliseconds: 10);
+                      if (isAnimating == true) {
+                        Timer.periodic(d1, animateRotationX);
+                        Timer.periodic(d2, animateRotationZ);
+                        Timer.periodic(d3, animateScaleValue);
+                      }
+                    });
+                  },
+                  child: Container(
+                    color: Colors.blue,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 10),
+                    child: Text(
+                      isAnimating ? 'Stop' : 'Start',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  )),
             ],
           ),
+          Padding(
+              padding: const EdgeInsets.only(top: 100.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 100.0),
+                    child: RawMaterialButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => exo2a.DisplayImageWidget(),
+                            ));
+                      },
+                      elevation: 2.0,
+                      fillColor: Colors.blue,
+                      child: Container(
+                          padding: EdgeInsets.only(left: 20),
+                          child: Icon(
+                            Icons.arrow_back_ios,
+                            size: 20.0,
+                            color: Colors.white,
+                          )),
+                      padding: EdgeInsets.all(10.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                  ),
+                  RawMaterialButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => exo4.DisplayTileWidget(),
+                          ));
+                    },
+                    elevation: 2.0,
+                    fillColor: Colors.blue,
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      size: 20.0,
+                      color: Colors.white,
+                    ),
+                    padding: EdgeInsets.all(10.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                ],
+              ))
         ],
       ),
     );

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'exo6a.dart' as exo6a;
-import 'exo5b.dart' as exo5b;
+import 'dart:ui';
 
 class Tile {
   String imageURL;
@@ -17,7 +16,7 @@ class Tile {
             alignment: this.alignment,
             widthFactor: 1 / gridSize,
             heightFactor: 1 / gridSize,
-            child: Image.asset(this.imageURL),
+            child: Image.network(this.imageURL),
           ),
         ),
       ),
@@ -33,6 +32,7 @@ class DisplayImageWidget extends StatefulWidget {
 class _DisplayImageWidgetState extends State<DisplayImageWidget> {
   double _gridSize = 4;
   List<Tile> _tiles = [];
+  String _imagePath = "assets/images/paris.jpg";
 
   @override
   void initState() {
@@ -45,9 +45,20 @@ class _DisplayImageWidgetState extends State<DisplayImageWidget> {
     for (int i = 0; i < _gridSize * _gridSize; i++) {
       double x = (i % _gridSize) * (2 / (_gridSize - 1)) - 1;
       double y = (i ~/ _gridSize) * (2 / (_gridSize - 1)) - 1;
-      _tiles.add(Tile(
-          imageURL: 'assets/images/paris.jpg', alignment: Alignment(x, y)));
+      _tiles.add(Tile(imageURL: _imagePath, alignment: Alignment(x, y)));
     }
+  }
+
+  void _pickImage() async {
+    final imagePath = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ImagePicker(),
+      ),
+    );
+    setState(() {
+      _imagePath = imagePath;
+      _generateTiles();
+    });
   }
 
   @override
@@ -59,6 +70,33 @@ class _DisplayImageWidgetState extends State<DisplayImageWidget> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          SizedBox(height: 20),
+          // ElevatedButton(
+          //   onPressed: () async {
+          //     final imagePicker = ImagePicker();
+          //     final pickedFile = await imagePicker.pickImage(
+          //       source: ImageSource.gallery,
+          //     );
+          //     if (pickedFile != null) {
+          //       // TODO: do something with the picked file
+          //     }
+          //   },
+          //   child: Text('Choose Image'),
+          // ),
+          GestureDetector(
+            onTap: () {
+              _pickImage();
+              setState(() {
+                _generateTiles();
+              });
+            },
+            child: Image.asset(
+              _imagePath,
+              width: 200,
+              height: 200,
+            ),
+          ),
+
           SizedBox(height: 20),
           Expanded(
             child: GridView.count(
@@ -98,64 +136,43 @@ class _DisplayImageWidgetState extends State<DisplayImageWidget> {
                 },
               ),
             ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 100.0),
-                  child: RawMaterialButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => exo5b.DisplayGridView(),
-                        ),
-                      );
-                    },
-                    elevation: 2.0,
-                    fillColor: Colors.blue,
-                    child: Container(
-                      padding: EdgeInsets.only(left: 20),
-                      child: Icon(
-                        Icons.arrow_back_ios,
-                        size: 20.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                    padding: EdgeInsets.all(10.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                ),
-                RawMaterialButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => exo6a.PositionedTiles(),
-                      ),
-                    );
-                  },
-                  elevation: 2.0,
-                  fillColor: Colors.blue,
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    size: 20.0,
-                    color: Colors.white,
-                  ),
-                  padding: EdgeInsets.all(10.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          )
         ],
+      ),
+    );
+  }
+}
+
+class ImagePicker extends StatelessWidget {
+  final List<String> _imagePaths = [
+    "assets/images/paris.jpg",
+    "assets/images/flutter.png",
+    "assets/images/paris1.jpg",
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Choose Image'),
+      ),
+      body: GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+        ),
+        itemCount: _imagePaths.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.of(context).pop(_imagePaths[index]);
+            },
+            child: Image.asset(
+              _imagePaths[index],
+              width: 100,
+              height: 100,
+            ),
+          );
+        },
       ),
     );
   }
