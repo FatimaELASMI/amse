@@ -10,8 +10,6 @@ import 'exo6a.dart' as exo6a;
 import 'exo6b.dart' as exo6b;
 import 'exo6c.dart' as exo6c;
 import 'exo7.dart' as exo7;
-import 'exo7a.dart' as exo7a;
-import 'exo8.dart' as exo8;
 
 void main() => runApp(MyApp());
 

@@ -68,7 +68,6 @@ class DisplayGridViewState extends State<DisplayGridView> {
       _tiles.add(new Tile(imagePath: imagePath, alignment: Alignment(x, y))
           .croppedImageTile(gridSize));
     }
-
     return _tiles;
   }
 
@@ -87,6 +86,7 @@ class DisplayGridViewState extends State<DisplayGridView> {
   @override
   Widget build(BuildContext context) {
     _generateTiles();
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Taquin Board '),
@@ -168,14 +168,15 @@ class DisplayGridViewState extends State<DisplayGridView> {
                   borderRadius: BorderRadius.circular(10.0),
                 )),
             RawMaterialButton(
-              onPressed: () {
+              onPressed: () => {
                 setState(() {
                   started = !started;
+
                   counter++;
                   if (counter <= 1) {
                     EmptyIndex = random.nextInt(pow(gridSize, 2).toInt() - 1);
                   }
-                });
+                })
               },
               elevation: 2.0,
               fillColor: Colors.blue,
